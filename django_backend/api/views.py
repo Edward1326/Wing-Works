@@ -1,28 +1,29 @@
 from rest_framework import generics
-from .models import addProduct, addIngredient, addCategory
-from .serializers import addProductSerializer, addIngredientSerializer, addCategorySerializer
+from .models import *
+from .serializers import *
+
 
 class productGetCreate(generics.ListCreateAPIView):
-    queryset = addProduct.objects.all()
-    serializer_class = addProductSerializer
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
 
 class productUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
-    queryset = addProduct.objects.all()
-    serializer_class = addProductSerializer
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
 
 
 class ingredientGetCreate(generics.ListCreateAPIView):
-    queryset = addIngredient.objects.all()
-    serializer_class = addIngredientSerializer
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientSerializer
 
 class ingredientUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
-    queryset = addIngredient.objects.all()
-    serializer_class = addIngredientSerializer
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientSerializer
 
 class categoryGetCreate(generics.ListCreateAPIView):
-    queryset = addCategory.objects.all()
-    serializer_class = addCategorySerializer
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
 class categoryUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
-    queryset = addCategory.objects.all()
-    serializer_class = addCategorySerializer
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer

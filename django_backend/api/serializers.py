@@ -1,17 +1,17 @@
 from rest_framework import serializers
-from .models import addProduct, addIngredient, addCategory
+from .models import *
 
-class addProductSerializer(serializers.ModelSerializer):
+class ProductSerializer(serializers.ModelSerializer):
     class Meta:
-        model = addProduct
+        model = Product
         fields = '__all__'
 
-class addIngredientSerializer(serializers.ModelSerializer):
+class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
-        model = addIngredient
+        model = Ingredient
         fields = '__all__'
 
-class addCategorySerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = addCategory
+        model = Category
         fields = '__all__'
