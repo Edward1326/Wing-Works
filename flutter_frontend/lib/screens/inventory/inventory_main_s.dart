@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'menu_item_s.dart'; // Import Menu Items screen
-import 'ingredients_s.dart'; // Import Ingredients screen
-import 'inv_categories_s.dart'; // Import Categories screen
-import 'req_pos_s.dart'; // Import Request Purchase Order screen
+import 'menu_item/menu_item_s.dart'; // Import Menu Items screen
+import 'ingredients/ingredients_s.dart'; // Import Ingredients screen
+import 'inv_categories/inv_categories_s.dart'; // Import Categories screen
+import 'req_pos/req_pos_s.dart'; // Import Request Purchase Order screen
 
 // 🏠 Inventory Main Screen - Users navigate between Inventory functionalities.
 class InventoryMainScreen extends StatelessWidget {
