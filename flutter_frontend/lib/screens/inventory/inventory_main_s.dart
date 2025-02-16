@@ -1,32 +1,25 @@
 import 'package:flutter/material.dart';
-import 'menu_item/menu_item_s.dart'; // Import Menu Items screen
-import 'ingredients/ingredients_s.dart'; // Import Ingredients screen
-import 'inv_categories/inv_categories_s.dart'; // Import Categories screen
-import 'req_pos/req_pos_s.dart'; // Import Request Purchase Order screen
+import 'menu_item/menu_item_s.dart';
+import 'ingredients/ingredients_s.dart';
+import 'inv_categories/inv_categories_s.dart';
+import 'req_pos/req_pos_s.dart';
 
-// 🏠 Inventory Main Screen - Users navigate between Inventory functionalities.
 class InventoryMainScreen extends StatelessWidget {
+  const InventoryMainScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 🟥 Top Navigation Bar
       appBar: AppBar(
-        backgroundColor: Colors.red, // 🎨 Modify navbar color
+        backgroundColor: const Color.fromARGB(255, 151, 27, 18),
         title: Text(
-          "Inventory",
-          style: TextStyle(color: Colors.white), // 🎨 Modify title text color
+          "Dashboard",
+          style: TextStyle(color: Colors.white),
         ),
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: Icon(Icons.menu, color: Colors.white), // 🍔 Modify menu icon color
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          ),
-        ),
+        iconTheme: IconThemeData(color: Colors.white),
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications, color: Colors.white), // 🔔 Modify notification icon color
+            icon: Icon(Icons.notifications, color: Colors.white),
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("No new notifications")),
@@ -35,125 +28,167 @@ class InventoryMainScreen extends StatelessWidget {
           ),
         ],
       ),
-
-      // 🟫 Side Navigation Drawer (DASHBOARD BUTTONS)
       drawer: Drawer(
         child: Container(
-          color: Color(0xFFFFE8E0), // 🎨 Modify drawer background color
-          child: Column(
+          color: Color(0xFFFFE8E0),
+          child: ListView(
+            padding: EdgeInsets.zero,
             children: [
               DrawerHeader(
-                decoration: BoxDecoration(color: Colors.red), // 🟥 Modify header color
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Dashboard',
-                    style: TextStyle(
-                      color: Colors.white, // ⚪ Modify header text color
-                      fontSize: 22, // 📝 Modify text size
-                      fontWeight: FontWeight.bold,
-                    ),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 151, 27, 18),
+                ),
+                child: Text(
+                  'Dashboard',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
                   ),
                 ),
               ),
-              // 📂 Dashboard Navigation Items (Main Sections)
-              _buildDrawerItem(Icons.inventory, "Inventory", context, PlaceholderScreen("Inventory")),
-              _buildDrawerItem(Icons.point_of_sale, "POS", context, PlaceholderScreen("POS")),
-              _buildDrawerItem(Icons.shopping_cart, "Ordering", context, PlaceholderScreen("Ordering")),
-              _buildDrawerItem(Icons.calendar_today, "Booking", context, PlaceholderScreen("Booking")),
-              _buildDrawerItem(Icons.attach_money, "Financial", context, PlaceholderScreen("Financial")),
-              _buildDrawerItem(Icons.people, "Employee", context, PlaceholderScreen("Employee")),
-            ],
-          ),
-        ),
-      ),
-
-      // 🎨 Full-Screen Background & Left-Aligned Buttons (INVENTORY NAVIGATION BUTTONS)
-      body: SizedBox.expand(
-        child: Container(
-          width: double.infinity,
-          height: double.infinity,
-          color: Color(0xFFFFE8E0), // 🎨 Modify background color here
-          padding: EdgeInsets.only(left: 20, top: 40), // 📏 Modify padding for alignment
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, // Aligns buttons to the left
-            children: [
-              _buildNavButton(Icons.list, "Menu Items", context, MenuItemScreen()),
-              _buildNavButton(Icons.inventory, "Ingredients", context, IngredientsScreen()),
-              _buildNavButton(Icons.grid_view, "Categories", context, InvCategoriesScreen()),
-              _buildNavButton(Icons.shopping_cart, "Request Purchase Order", context, ReqPosScreen()),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // 🔹 Function to Create a Drawer Item (DASHBOARD NAVIGATION)
-  Widget _buildDrawerItem(IconData icon, String title, BuildContext context, Widget screen) {
-    return Column(
-      children: [
-        ListTile(
-          leading: Icon(icon, color: Colors.black, size: 24), // 🎨 Modify icon color & size
-          title: Text(title, style: TextStyle(fontSize: 16)), // 📝 Modify text size
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
-          },
-        ),
-        Divider(height: 1, thickness: 1, color: Colors.black38), // 🔳 Modify separator color
-      ],
-    );
-  }
-
-  // 🔹 Function to Create a Left-Aligned Navigation Button (INVENTORY PAGE BUTTONS)
-  Widget _buildNavButton(IconData icon, String title, BuildContext context, Widget screen) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0), // 📏 Modify spacing between buttons
-      child: SizedBox(
-        width: 280, // 📏 Modify button width
-        height: 60, // 📏 Modify button height
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white, // 🎨 Modify button background color
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10), // 🔲 Modify button corner radius
-            ),
-            elevation: 2, // 🔳 Modify button shadow effect
-          ),
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start, // 📏 Aligns button content to the left
-            children: [
-              Icon(icon, color: Colors.black, size: 28), // 🎨 Modify icon size & color
-              SizedBox(width: 15), // 📏 Modify spacing between icon & text
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 18, // 📝 Modify text size
-                  color: Colors.black, // 🎨 Modify text color
-                ),
+              _buildDrawerItem(
+                icon: Icons.inventory_2,
+                title: 'Inventory',
+                onTap: () {
+                  Navigator.pop(context);
+                  // Already on inventory screen
+                },
+              ),
+              _buildDrawerItem(
+                icon: Icons.point_of_sale,
+                title: 'POS',
+                onTap: () {
+                  Navigator.pop(context);
+                  // TODO: Navigate to POS screen
+                },
+              ),
+              _buildDrawerItem(
+                icon: Icons.shopping_cart,
+                title: 'Ordering',
+                onTap: () {
+                  Navigator.pop(context);
+                  // TODO: Navigate to Ordering screen
+                },
+              ),
+              _buildDrawerItem(
+                icon: Icons.calendar_today,
+                title: 'Booking',
+                onTap: () {
+                  Navigator.pop(context);
+                  // TODO: Navigate to Booking screen
+                },
+              ),
+              _buildDrawerItem(
+                icon: Icons.attach_money,
+                title: 'Financial',
+                onTap: () {
+                  Navigator.pop(context);
+                  // TODO: Navigate to Financial screen
+                },
+              ),
+              _buildDrawerItem(
+                icon: Icons.people,
+                title: 'Employee',
+                onTap: () {
+                  Navigator.pop(context);
+                  // TODO: Navigate to Employee screen
+                },
               ),
             ],
           ),
         ),
       ),
+      body: Container(
+        color: Color(0xFFFFE8E0),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildInventoryButton(
+              icon: Icons.list,
+              label: 'Menu Items',
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MenuItemScreen()),
+              ),
+            ),
+            SizedBox(height: 12),
+            _buildInventoryButton(
+              icon: Icons.inventory,
+              label: 'Ingredients',
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => IngredientsScreen()),
+              ),
+            ),
+            SizedBox(height: 12),
+            _buildInventoryButton(
+              icon: Icons.grid_view,
+              label: 'Categories',
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => InvCategoriesScreen()),
+              ),
+            ),
+            SizedBox(height: 12),
+            _buildInventoryButton(
+              icon: Icons.shopping_cart,
+              label: 'Request Purchase Order',
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ReqPosScreen()),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
-}
 
-// 📝 Temporary Placeholder Screen - Replace when real screens are created
-class PlaceholderScreen extends StatelessWidget {
-  final String title;
-  PlaceholderScreen(this.title);
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      onTap: onTap,
+      tileColor: Colors.transparent,
+      textColor: Colors.black,
+      iconColor: Colors.black,
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(child: Text("$title Screen (Coming Soon)")),
+  Widget _buildInventoryButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        alignment: Alignment.centerLeft,
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.black),
+          SizedBox(width: 12),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

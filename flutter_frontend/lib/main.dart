@@ -1,39 +1,29 @@
 import 'package:flutter/material.dart';
-import 'screens/inventory/inventory_main_s.dart'; // Import the second screen
+import 'package:flutter/services.dart';
+import 'screens/inventory/inventory_main_s.dart';
 
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeRight,
+    DeviceOrientation.landscapeLeft,
+  ]);
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Wings on Wheels',
+      theme: ThemeData(
+        primarySwatch: Colors.red,
+        scaffoldBackgroundColor: Color(0xFFFFE8E0),
+      ),
+      home: InventoryMainScreen(),
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Navigation Demo',
-      home: HomeScreen(),
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(                       // Navbar 
-        title: Text("Home"),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => InventoryMainScreen()),
-            );
-          },
-          child: Text("Inventory"),
-        ),
-      ),
     );
   }
 }
