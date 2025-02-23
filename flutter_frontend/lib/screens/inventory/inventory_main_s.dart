@@ -3,6 +3,7 @@ import 'menu_item/menu_item_s.dart'; // Import Menu Items screen
 import 'ingredients/ingredients_s.dart'; // Import Ingredients screen
 import 'inv_categories/inv_categories_s.dart'; // Import Categories screen
 import 'req_pos/req_pos_s.dart'; // Import Request Purchase Order screen
+import 'supplier/inv_supl_s.dart'; // Import Supplier screen
 
 // 🏠 Inventory Main Screen - Users navigate between Inventory functionalities.
 class InventoryMainScreen extends StatelessWidget {
@@ -82,6 +83,7 @@ class InventoryMainScreen extends StatelessWidget {
               _buildNavButton(Icons.inventory, "Ingredients", context, IngredientsScreen()),
               _buildNavButton(Icons.grid_view, "Categories", context, InvCategoriesScreen()),
               _buildNavButton(Icons.shopping_cart, "Request Purchase Order", context, ReqPosScreen()),
+              _buildNavButton(Icons.shopping_cart, "Supplier", context, SupplierScreen()),
             ],
           ),
         ),
