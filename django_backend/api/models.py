@@ -2,7 +2,6 @@ from django.db import models
 import random
 
 
-
 #GLOBAL ------------------------------------------------------------------------------------------------------------------
 
 class Person(models.Model):
@@ -14,7 +13,6 @@ class Person(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-
 
 #INVENTORY ---------------------------------------------------------------------------------------------------------------
 
@@ -76,7 +74,7 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    
+
     STATUS_CHOICES = [
         ('active', 'Active'),
         ('inactive', 'Inactive'),
@@ -92,7 +90,21 @@ class Product(models.Model):
     def __str__(self):
         return self.product_name
 
+#POS --------------------------------------------------------------------------------------------------------------------
 
+class Order(models.Model):
+    customer_name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.customer_name} {self.id}"
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order_items")
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f" {self.order.id}"
 
 #EMPLOYEE ---------------------------------------------------------------------------------------------------------------
 

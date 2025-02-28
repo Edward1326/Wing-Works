@@ -37,6 +37,21 @@ class IngredientAdmin(admin.ModelAdmin):
 admin.site.register(Ingredient, IngredientAdmin)
 
 admin.site.register(Supplier)
+
+#POS --------------------------------------------------------------------------------------------
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('id','customer_name')
+
+admin.site.register(Order, OrderAdmin)
+
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ('id','get_customer_name')
+
+    def get_customer_name(self, obj):
+        return obj.order.customer_name
+
+admin.site.register(OrderItem, OrderItemAdmin)
+
 #EMPLOYEE ---------------------------------------------------------------------------------------
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'employee_role', 'pin') 
