@@ -22,7 +22,6 @@ class _MenuItemScreenState extends State<MenuItemScreen> {
 
   void _loadMenuItems() {
     setState(() {
-      // Filter items based on active status and category
       _menuItems = _menuItems.where((item) {
         bool matchesActiveStatus = item['active'] == _isActive;
         bool matchesCategory = _selectedCategory == 'Category' ||
@@ -78,7 +77,6 @@ class _MenuItemScreenState extends State<MenuItemScreen> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    // Add new menu item
                     if (nameController.text.isNotEmpty &&
                         qtyController.text.isNotEmpty) {
                       final newItem = {

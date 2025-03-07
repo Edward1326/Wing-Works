@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'screens/inventory/inventory_main_s.dart';
+import 'screens/inventory/login/login_s.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,10 +21,14 @@ class MyApp extends StatelessWidget {
       title: 'Wings on Wheels',
       theme: ThemeData(
         primarySwatch: Colors.red,
-        scaffoldBackgroundColor: Color(0xFFFFE8E0),
+        scaffoldBackgroundColor: const Color(0xFFFFE8E0),
+        primaryColor: const Color(0xFFB71C1C),
       ),
-      home: InventoryMainScreen(),
+      home: const LoginScreen(),
       debugShowCheckedModeBanner: false,
+      routes: {
+        '/inventory': (context) => const InventoryMainScreen(),
+      },
     );
   }
 }
