@@ -277,7 +277,7 @@ class _InvCategoriesScreenState extends State<InvCategoriesScreen> {
       // ADJUSTABLE: App bar configuration
       appBar: AppBar(
         // ADJUSTABLE: Change app bar color here
-        backgroundColor: const Color.fromARGB(255, 151, 27, 18), // Red color
+        backgroundColor: const Color.fromRGBO(244, 67, 54, 1), // Red color
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),

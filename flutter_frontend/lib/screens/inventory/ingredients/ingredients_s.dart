@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-enum UnitType {
-  grams,
-  milliliters,
-  piece
-}
+enum UnitType { grams, milliliters, piece }
 
 class Ingredient {
   final String name;
@@ -102,7 +98,8 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
     setState(() {
       _filteredIngredients = _allIngredients.where((ingredient) {
         final matchesQuery = ingredient.name.toLowerCase().contains(query);
-        final matchesStatus = _showActive ? ingredient.isActive : !ingredient.isActive;
+        final matchesStatus =
+            _showActive ? ingredient.isActive : !ingredient.isActive;
         return matchesQuery && matchesStatus;
       }).toList();
     });
@@ -119,7 +116,7 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFFB71C1C),
+        backgroundColor: const Color.fromRGBO(244, 67, 54, 1),
         title: const Text(
           "Ingredients",
           style: TextStyle(color: Colors.white),
@@ -347,8 +344,9 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
       case UnitType.milliliters:
         return 'ml';
       case UnitType.piece:
-        return unitType == UnitType.piece && int.tryParse(_stockController.text) == 1 
-            ? 'pc' 
+        return unitType == UnitType.piece &&
+                int.tryParse(_stockController.text) == 1
+            ? 'pc'
             : 'pcs';
     }
   }
@@ -359,7 +357,8 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
   final TextEditingController _expiryDateController = TextEditingController();
   final TextEditingController _minimumStockController = TextEditingController();
   final TextEditingController _supplierNameController = TextEditingController();
-  final TextEditingController _contactNumberController = TextEditingController();
+  final TextEditingController _contactNumberController =
+      TextEditingController();
   final TextEditingController _emailAddressController = TextEditingController();
   final TextEditingController _pricePerUnitController = TextEditingController();
   UnitType _selectedUnitType = UnitType.grams;
@@ -382,7 +381,7 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
 
   void _showAddIngredientDialog() {
     _resetFormControllers();
-    
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -396,7 +395,8 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                   children: [
                     // Custom AppBar
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
                       color: const Color(0xFFB71C1C),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -404,7 +404,8 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                           Row(
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                                icon: const Icon(Icons.arrow_back,
+                                    color: Colors.white),
                                 onPressed: () => Navigator.of(context).pop(),
                               ),
                               const Text(
@@ -446,7 +447,7 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Unit of measurement
                           const Text("Unit of measurement"),
                           Row(
@@ -478,7 +479,7 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Stock
                           const Text("Stock"),
                           TextField(
@@ -495,7 +496,7 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                             keyboardType: TextInputType.number,
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Expiry date
                           const Text("Expiry date"),
                           TextField(
@@ -510,17 +511,19 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                                 context: context,
                                 initialDate: DateTime.now(),
                                 firstDate: DateTime.now(),
-                                lastDate: DateTime.now().add(const Duration(days: 3650)),
+                                lastDate: DateTime.now()
+                                    .add(const Duration(days: 3650)),
                               );
                               if (picked != null) {
                                 setState(() {
-                                  _expiryDateController.text = DateFormat('dd/MM/yyyy').format(picked);
+                                  _expiryDateController.text =
+                                      DateFormat('dd/MM/yyyy').format(picked);
                                 });
                               }
                             },
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Minimum stock level
                           const Text("Minimum Stock Level"),
                           TextField(
@@ -537,7 +540,7 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                             keyboardType: TextInputType.number,
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Has Supplier
                           const Text("Has Supplier"),
                           Row(
@@ -561,7 +564,7 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Supplier information (conditionally visible)
                           if (_hasSupplier) ...[
                             const Text("Supplier Name"),
@@ -573,7 +576,6 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                               ),
                             ),
                             const SizedBox(height: 16),
-                            
                             const Text("Contact Number"),
                             TextField(
                               controller: _contactNumberController,
@@ -584,7 +586,6 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                               keyboardType: TextInputType.phone,
                             ),
                             const SizedBox(height: 16),
-                            
                             const Text("Email Address"),
                             TextField(
                               controller: _emailAddressController,
@@ -595,7 +596,6 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                               keyboardType: TextInputType.emailAddress,
                             ),
                             const SizedBox(height: 16),
-                            
                             const Text("Price per unit"),
                             TextField(
                               controller: _pricePerUnitController,
@@ -627,18 +627,19 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
     _nameController.text = ingredient.name;
     _stockController.text = ingredient.stock.replaceAll(RegExp(r'[^0-9]'), '');
     _expiryDateController.text = ingredient.expiryDate;
-    _minimumStockController.text = ingredient.minimumStockLevel.replaceAll(RegExp(r'[^0-9]'), '');
+    _minimumStockController.text =
+        ingredient.minimumStockLevel.replaceAll(RegExp(r'[^0-9]'), '');
     _selectedUnitType = ingredient.unitType;
     _hasSupplier = ingredient.hasSupplier;
     _isActive = ingredient.isActive;
-    
+
     if (ingredient.hasSupplier) {
       _supplierNameController.text = ingredient.supplierName ?? '';
       _contactNumberController.text = ingredient.contactNumber ?? '';
       _emailAddressController.text = ingredient.emailAddress ?? '';
       _pricePerUnitController.text = ingredient.pricePerUnit?.toString() ?? '';
     }
-    
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -652,7 +653,8 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                   children: [
                     // Custom AppBar
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
                       color: const Color(0xFFB71C1C),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -660,7 +662,8 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                           Row(
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                                icon: const Icon(Icons.arrow_back,
+                                    color: Colors.white),
                                 onPressed: () => Navigator.of(context).pop(),
                               ),
                               const Text(
@@ -715,7 +718,7 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Name
                           const Text("Name"),
                           TextField(
@@ -726,7 +729,7 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Unit of measurement
                           const Text("Unit of measurement"),
                           Row(
@@ -758,7 +761,7 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Stock
                           const Text("Stock"),
                           TextField(
@@ -775,7 +778,7 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                             keyboardType: TextInputType.number,
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Expiry date
                           const Text("Expiry date"),
                           TextField(
@@ -790,17 +793,19 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                                 context: context,
                                 initialDate: DateTime.now(),
                                 firstDate: DateTime.now(),
-                                lastDate: DateTime.now().add(const Duration(days: 3650)),
+                                lastDate: DateTime.now()
+                                    .add(const Duration(days: 3650)),
                               );
                               if (picked != null) {
                                 setState(() {
-                                  _expiryDateController.text = DateFormat('dd/MM/yyyy').format(picked);
+                                  _expiryDateController.text =
+                                      DateFormat('dd/MM/yyyy').format(picked);
                                 });
                               }
                             },
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Minimum stock level
                           const Text("Minimum Stock Level"),
                           TextField(
@@ -817,7 +822,7 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                             keyboardType: TextInputType.number,
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Has Supplier
                           const Text("Has Supplier"),
                           Row(
@@ -841,7 +846,7 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Supplier information (conditionally visible)
                           if (_hasSupplier) ...[
                             const Text("Supplier Name"),
@@ -853,7 +858,6 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                               ),
                             ),
                             const SizedBox(height: 16),
-                            
                             const Text("Contact Number"),
                             TextField(
                               controller: _contactNumberController,
@@ -864,7 +868,6 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                               keyboardType: TextInputType.phone,
                             ),
                             const SizedBox(height: 16),
-                            
                             const Text("Email Address"),
                             TextField(
                               controller: _emailAddressController,
@@ -875,7 +878,6 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                               keyboardType: TextInputType.emailAddress,
                             ),
                             const SizedBox(height: 16),
-                            
                             const Text("Price per unit"),
                             TextField(
                               controller: _pricePerUnitController,
@@ -910,8 +912,10 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
       return;
     }
 
-    final stockWithUnit = "${_stockController.text}${_getUnitSuffix(_selectedUnitType)}";
-    final minimumStockWithUnit = "${_minimumStockController.text}${_getUnitSuffix(_selectedUnitType)}";
+    final stockWithUnit =
+        "${_stockController.text}${_getUnitSuffix(_selectedUnitType)}";
+    final minimumStockWithUnit =
+        "${_minimumStockController.text}${_getUnitSuffix(_selectedUnitType)}";
 
     // Check if stock is low
     double stockValue = double.tryParse(_stockController.text) ?? 0;
@@ -947,8 +951,8 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
       supplierName: _hasSupplier ? _supplierNameController.text : null,
       contactNumber: _hasSupplier ? _contactNumberController.text : null,
       emailAddress: _hasSupplier ? _emailAddressController.text : null,
-      pricePerUnit: _hasSupplier && _pricePerUnitController.text.isNotEmpty 
-          ? double.tryParse(_pricePerUnitController.text) 
+      pricePerUnit: _hasSupplier && _pricePerUnitController.text.isNotEmpty
+          ? double.tryParse(_pricePerUnitController.text)
           : null,
     );
 
@@ -966,8 +970,10 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
       return;
     }
 
-    final stockWithUnit = "${_stockController.text}${_getUnitSuffix(_selectedUnitType)}";
-    final minimumStockWithUnit = "${_minimumStockController.text}${_getUnitSuffix(_selectedUnitType)}";
+    final stockWithUnit =
+        "${_stockController.text}${_getUnitSuffix(_selectedUnitType)}";
+    final minimumStockWithUnit =
+        "${_minimumStockController.text}${_getUnitSuffix(_selectedUnitType)}";
 
     // Check if stock is low
     double stockValue = double.tryParse(_stockController.text) ?? 0;
@@ -1004,8 +1010,8 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
       supplierName: _hasSupplier ? _supplierNameController.text : null,
       contactNumber: _hasSupplier ? _contactNumberController.text : null,
       emailAddress: _hasSupplier ? _emailAddressController.text : null,
-      pricePerUnit: _hasSupplier && _pricePerUnitController.text.isNotEmpty 
-          ? double.tryParse(_pricePerUnitController.text) 
+      pricePerUnit: _hasSupplier && _pricePerUnitController.text.isNotEmpty
+          ? double.tryParse(_pricePerUnitController.text)
           : null,
     );
 
