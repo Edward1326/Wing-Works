@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'menu_item/menu_item_s.dart'; // Import Menu Items screen
 import 'ingredients/ingredients_s.dart'; // Import Ingredients screen
 import 'inv_categories/inv_categories_s.dart'; // Import Categories screen
-import 'req_pos/req_pos_s.dart'; // Import Request Purchase Order screen
+import 'req_po/req_po_s.dart'; // Import Request Purchase Order screen
 import 'supplier/inv_supl_s.dart'; // Import Supplier screen
 
 // 🏠 Inventory Main Screen - Users navigate between Inventory functionalities.
@@ -19,7 +19,8 @@ class InventoryMainScreen extends StatelessWidget {
         ),
         leading: Builder(
           builder: (context) => IconButton(
-            icon: Icon(Icons.menu, color: Colors.white), // 🍔 Modify menu icon color
+            icon: Icon(Icons.menu,
+                color: Colors.white), // 🍔 Modify menu icon color
             onPressed: () {
               Scaffold.of(context).openDrawer();
             },
@@ -27,7 +28,8 @@ class InventoryMainScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications, color: Colors.white), // 🔔 Modify notification icon color
+            icon: Icon(Icons.notifications,
+                color: Colors.white), // 🔔 Modify notification icon color
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("No new notifications")),
@@ -44,7 +46,8 @@ class InventoryMainScreen extends StatelessWidget {
           child: Column(
             children: [
               DrawerHeader(
-                decoration: BoxDecoration(color: Colors.red), // 🟥 Modify header color
+                decoration:
+                    BoxDecoration(color: Colors.red), // 🟥 Modify header color
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -58,12 +61,18 @@ class InventoryMainScreen extends StatelessWidget {
                 ),
               ),
               // 📂 Dashboard Navigation Items (Main Sections)
-              _buildDrawerItem(Icons.inventory, "Inventory", context, PlaceholderScreen("Inventory")),
-              _buildDrawerItem(Icons.point_of_sale, "POS", context, PlaceholderScreen("POS")),
-              _buildDrawerItem(Icons.shopping_cart, "Ordering", context, PlaceholderScreen("Ordering")),
-              _buildDrawerItem(Icons.calendar_today, "Booking", context, PlaceholderScreen("Booking")),
-              _buildDrawerItem(Icons.attach_money, "Financial", context, PlaceholderScreen("Financial")),
-              _buildDrawerItem(Icons.people, "Employee", context, PlaceholderScreen("Employee")),
+              _buildDrawerItem(Icons.inventory, "Inventory", context,
+                  PlaceholderScreen("Inventory")),
+              _buildDrawerItem(Icons.point_of_sale, "POS", context,
+                  PlaceholderScreen("POS")),
+              _buildDrawerItem(Icons.shopping_cart, "Ordering", context,
+                  PlaceholderScreen("Ordering")),
+              _buildDrawerItem(Icons.calendar_today, "Booking", context,
+                  PlaceholderScreen("Booking")),
+              _buildDrawerItem(Icons.attach_money, "Financial", context,
+                  PlaceholderScreen("Financial")),
+              _buildDrawerItem(Icons.people, "Employee", context,
+                  PlaceholderScreen("Employee")),
             ],
           ),
         ),
@@ -75,15 +84,22 @@ class InventoryMainScreen extends StatelessWidget {
           width: double.infinity,
           height: double.infinity,
           color: Color(0xFFFFE8E0), // 🎨 Modify background color here
-          padding: EdgeInsets.only(left: 20, top: 40), // 📏 Modify padding for alignment
+          padding: EdgeInsets.only(
+              left: 20, top: 40), // 📏 Modify padding for alignment
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, // Aligns buttons to the left
+            crossAxisAlignment:
+                CrossAxisAlignment.start, // Aligns buttons to the left
             children: [
-              _buildNavButton(Icons.list, "Menu Items", context, MenuItemScreen()),
-              _buildNavButton(Icons.inventory, "Ingredients", context, IngredientsScreen()),
-              _buildNavButton(Icons.grid_view, "Categories", context, InvCategoriesScreen()),
-              _buildNavButton(Icons.shopping_cart, "Request Purchase Order", context, ReqPosScreen()),
-              _buildNavButton(Icons.shopping_cart, "Supplier", context, SupplierScreen()),
+              _buildNavButton(
+                  Icons.list, "Menu Items", context, MenuItemScreen()),
+              _buildNavButton(
+                  Icons.inventory, "Ingredients", context, IngredientsScreen()),
+              _buildNavButton(Icons.grid_view, "Categories", context,
+                  InvCategoriesScreen()),
+              _buildNavButton(Icons.shopping_cart, "Request Purchase Order",
+                  context, ReqPOScreen()),
+              _buildNavButton(
+                  Icons.shopping_cart, "Supplier", context, SupplierScreen()),
             ],
           ),
         ),
@@ -92,26 +108,35 @@ class InventoryMainScreen extends StatelessWidget {
   }
 
   // 🔹 Function to Create a Drawer Item (DASHBOARD NAVIGATION)
-  Widget _buildDrawerItem(IconData icon, String title, BuildContext context, Widget screen) {
+  Widget _buildDrawerItem(
+      IconData icon, String title, BuildContext context, Widget screen) {
     return Column(
       children: [
         ListTile(
-          leading: Icon(icon, color: Colors.black, size: 24), // 🎨 Modify icon color & size
-          title: Text(title, style: TextStyle(fontSize: 16)), // 📝 Modify text size
+          leading: Icon(icon,
+              color: Colors.black, size: 24), // 🎨 Modify icon color & size
+          title: Text(title,
+              style: TextStyle(fontSize: 16)), // 📝 Modify text size
           onTap: () {
             Navigator.pop(context);
-            Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => screen));
           },
         ),
-        Divider(height: 1, thickness: 1, color: Colors.black38), // 🔳 Modify separator color
+        Divider(
+            height: 1,
+            thickness: 1,
+            color: Colors.black38), // 🔳 Modify separator color
       ],
     );
   }
 
   // 🔹 Function to Create a Left-Aligned Navigation Button (INVENTORY PAGE BUTTONS)
-  Widget _buildNavButton(IconData icon, String title, BuildContext context, Widget screen) {
+  Widget _buildNavButton(
+      IconData icon, String title, BuildContext context, Widget screen) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0), // 📏 Modify spacing between buttons
+      padding: const EdgeInsets.symmetric(
+          vertical: 10.0), // 📏 Modify spacing between buttons
       child: SizedBox(
         width: 280, // 📏 Modify button width
         height: 60, // 📏 Modify button height
@@ -119,17 +144,21 @@ class InventoryMainScreen extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white, // 🎨 Modify button background color
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10), // 🔲 Modify button corner radius
+              borderRadius:
+                  BorderRadius.circular(10), // 🔲 Modify button corner radius
             ),
             elevation: 2, // 🔳 Modify button shadow effect
           ),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => screen));
           },
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start, // 📏 Aligns button content to the left
+            mainAxisAlignment:
+                MainAxisAlignment.start, // 📏 Aligns button content to the left
             children: [
-              Icon(icon, color: Colors.black, size: 28), // 🎨 Modify icon size & color
+              Icon(icon,
+                  color: Colors.black, size: 28), // 🎨 Modify icon size & color
               SizedBox(width: 15), // 📏 Modify spacing between icon & text
               Text(
                 title,

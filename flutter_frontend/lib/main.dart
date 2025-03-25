@@ -21,7 +21,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( // Navbar
+      appBar: AppBar(
+        // Navbar
         title: const Text("Home"),
       ),
       body: Center(
@@ -33,7 +34,8 @@ class HomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => InventoryMainScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => InventoryMainScreen()),
                 );
               },
               child: const Text("Inventory"),
