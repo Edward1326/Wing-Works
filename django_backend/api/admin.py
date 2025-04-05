@@ -27,10 +27,10 @@ class IngredientAdmin(admin.ModelAdmin):
     list_display = ('ingredient_name','unit_of_measurement', 'stock_with_unit', 'minimum_stock', 'expiration_date', 'status')
 
     def stock_with_unit(self, obj):
-        return f"{obj.stock} {obj.unit_of_measurement}"
+        return f"{obj.stock} {obj.Unit_of_Measurement}"
 
     def minimum_stock(self, obj):
-        return f"{obj.minimum_stock} {obj.unit_of_measurement}"
+        return f"{obj.minimum_stock} {obj.Unit_of_Measurement}"
 
     stock_with_unit.short_description = 'Stock'  
 

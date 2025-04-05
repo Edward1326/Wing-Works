@@ -1,13 +1,15 @@
 from rest_framework import serializers
-from .models import Product, Ingredient, Category, Booking, Employee, Role, AccessRights, Financial, Order, OrderItem, Supplier
-
+from .models import Product, Ingredient, Category, Booking, Employee, Role, AccessRights, Financial, Order, OrderItem, Supplier, Unit_of_Measurement
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
 
 class IngredientSerializer(serializers.ModelSerializer):
-    unit_of_measurement = serializers.StringRelatedField()
+    unit_of_measurement = serializers.SlugRelatedField(
+        queryset=Unit_of_Measurement.objects.all(),
+        slug_field='unit'  # you can also use 'id' if you prefer numeric IDs
+    )
 
     class Meta:
         model = Ingredient

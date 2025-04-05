@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 buildscript {
     repositories {
         google()
@@ -10,7 +8,6 @@ buildscript {
     }  // ✅ CLOSING BRACKET ADDED
 }
 
->>>>>>> recovered-files
 allprojects {
     repositories {
         google()
