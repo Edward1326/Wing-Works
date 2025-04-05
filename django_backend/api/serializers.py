@@ -1,22 +1,4 @@
 from rest_framework import serializers
-<<<<<<< HEAD
-from .models import addProduct, addIngredient, addCategory
-
-class addProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = addProduct
-        fields = '__all__'
-
-class addIngredientSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = addIngredient
-        fields = '__all__'
-
-class addCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = addCategory
-        fields = '__all__'
-=======
 from .models import Product, Ingredient, Category, Booking, Employee, Role, AccessRights, Financial, Order, OrderItem, Supplier
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -89,4 +71,3 @@ class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = '__all__'
->>>>>>> recovered-files

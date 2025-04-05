@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-from django.urls import path
-from .views import productGetCreate, productUpdateDelete, ingredientGetCreate, ingredientUpdateDelete, categoryGetCreate, categoryUpdateDelete
-
-urlpatterns = [
-    path('products/', productGetCreate.as_view(), name='product-list-create'),  
-    path('products/<int:pk>/', productUpdateDelete.as_view(), name='product-update-delete'),  
-    path('ingredients/', ingredientGetCreate.as_view(), name='ingredient-list-create'),  
-    path('ingredients/<int:pk>/', ingredientUpdateDelete.as_view(), name='ingredient-update-delete'), 
-    path('category/', categoryGetCreate.as_view(), name='ingredient-list-create'),  
-    path('catogory/<int:pk>/', categoryUpdateDelete.as_view(), name='ingredient-update-delete'), 
-=======
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
@@ -65,5 +53,4 @@ urlpatterns = [
     path('suppliers/edit/<int:supplier_id>/', edit_supplier, name='edit_supplier'),
 
     path('ingredients/list/', get_ingredients, name='get_ingredients'),
->>>>>>> recovered-files
 ]

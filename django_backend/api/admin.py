@@ -1,12 +1,4 @@
 from django.contrib import admin
-<<<<<<< HEAD
-from .models import addProduct, addIngredient, addCategory
-# Register your models here.
-
-admin.site.register(addProduct)
-admin.site.register(addCategory)
-admin.site.register(addIngredient)
-=======
 from .models import *
 # Register your models here.
 
@@ -75,4 +67,3 @@ admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(Role)
 admin.site.register(Customer)
 admin.site.register(Booking)
->>>>>>> recovered-files
