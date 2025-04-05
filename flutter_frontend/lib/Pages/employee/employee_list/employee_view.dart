@@ -1,23 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_frontend/pages/employee/employee_list/employee_edit.dart';
-import 'package:flutter_frontend/pages/employee/employee_main.dart';
-
-void main() {
-  runApp(EmployeeApp());
-}
-
-class EmployeeApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: EmployeeScreen(),
-    );
-  }
-}
 
 class ViewEmployeeScreen extends StatelessWidget {
-  final Map<String, String> employee;
+  final Map<String, dynamic> employee;
 
   ViewEmployeeScreen({required this.employee});
 
@@ -37,8 +22,8 @@ class ViewEmployeeScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        EditEmployeeScreen(employee: employee)),
+                  builder: (context) => EditEmployeeScreen(employee: employee),
+                ),
               );
             },
             child: Text('Edit',
@@ -52,11 +37,11 @@ class ViewEmployeeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            buildDetail('Username', employee['username']!),
-            buildDetail('Name', employee['name']!),
-            buildDetail('Email', employee['email']!),
-            buildDetail('Contact Number', employee['contact']!),
-            buildDetail('Role', employee['role']!),
+            buildDetail('Username', employee['username'] ?? ''),
+            buildDetail('Name', employee['name'] ?? ''),
+            buildDetail('Email', employee['email'] ?? ''),
+            buildDetail('Contact Number', employee['contact'] ?? ''),
+            buildDetail('Role', employee['role'] ?? ''),
             SizedBox(height: 16),
             Text('PIN',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
@@ -64,14 +49,15 @@ class ViewEmployeeScreen extends StatelessWidget {
               children: [
                 Icon(Icons.lock, color: Colors.grey),
                 SizedBox(width: 8),
-                ...employee['pin']!.split('').map((digit) => Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 4),
-                      child: Text(digit,
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey)),
-                    )),
+                ...employee['pin']?.toString().split('').map((digit) => Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 4),
+                          child: Text(digit,
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey)),
+                        )) ??
+                    [],
               ],
             ),
           ],

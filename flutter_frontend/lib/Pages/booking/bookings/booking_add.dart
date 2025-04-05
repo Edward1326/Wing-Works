@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class AddBookingScreen extends StatefulWidget {
   @override
@@ -21,10 +23,50 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
       firstDate: DateTime.now(),
       lastDate: DateTime(2101),
     );
-    if (picked != null && picked != _selectedDate)
+    if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
       });
+    }
+  }
+
+  Future<void> _saveBooking() async {
+    String apiUrl = "http://10.0.2.2:8000/api/bookings/create/";
+
+    Map<String, dynamic> bookingData = {
+      "customer_name": _nameController.text,
+      "event_name": _eventController.text,
+      "customer_email": _emailController.text,
+      "customer_contact": _contactController.text,
+      "head_count": int.tryParse(_attendeesController.text) ?? 0,
+      "location": _locationController.text,
+      "booking_date":
+          _selectedDate.toIso8601String().split('T')[0], // YYYY-MM-DD format
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(bookingData),
+      );
+
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Booking Created Successfully!")),
+        );
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to Create Booking")),
+        );
+      }
+    } catch (error) {
+      print("Error: $error");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error Connecting to Server")),
+      );
+    }
   }
 
   @override
@@ -41,9 +83,7 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              _saveBooking();
-            },
+            onPressed: _saveBooking,
             child: Text('Add',
                 style: TextStyle(color: Colors.white, fontSize: 20)),
           ),
@@ -103,10 +143,5 @@ class _AddBookingScreenState extends State<AddBookingScreen> {
         ),
       ),
     );
-  }
-
-  void _saveBooking() {
-    print('Booking Saved!');
-    Navigator.pop(context);
   }
 }

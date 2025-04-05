@@ -1,20 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_frontend/pages/booking/bookings/booking_list.dart';
 import 'package:flutter_frontend/pages/booking/pending_approval/pending_list.dart';
-
-void main() {
-  runApp(BookingApp());
-}
-
-class BookingApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: BookingScreen(),
-    );
-  }
-}
+import 'package:flutter_frontend/pages/create_order/create_order.dart';
 
 class BookingScreen extends StatelessWidget {
   @override
@@ -22,15 +9,20 @@ class BookingScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFB51616),
-        title: Text('Booking Screen', style: TextStyle(color: Colors.white)),
+        title: Text('Booking', style: TextStyle(color: Colors.white)),
         iconTheme: IconThemeData(color: Colors.white),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications, color: Colors.white),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("No new notifications")),
+              );
+            },
+          ),
+        ],
       ),
+      drawer: buildDrawer(context),
       body: Container(
         color: Color(0xFFFFE4E1),
         padding: EdgeInsets.all(16),

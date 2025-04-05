@@ -54,8 +54,13 @@ admin.site.register(OrderItem, OrderItemAdmin)
 
 #EMPLOYEE ---------------------------------------------------------------------------------------
 class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'employee_role', 'pin') 
+    list_display = ('first_name', 'last_name', 'get_role_name', 'pin') 
     readonly_fields = ('pin',) 
+
+    def get_role_name(self, obj):
+        return obj.employee_role.role_name 
+
+    get_role_name.short_description = 'Role'
 
 admin.site.register(Employee, EmployeeAdmin)
 

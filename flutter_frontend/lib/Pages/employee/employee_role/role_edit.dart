@@ -1,10 +1,19 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class RoleEditScreen extends StatefulWidget {
+  final int roleId;
   final String roleName;
   final Map<String, bool> roleAccess;
+  final bool isActive;
 
-  RoleEditScreen({required this.roleName, required this.roleAccess});
+  RoleEditScreen({
+    required this.roleId,
+    required this.roleName,
+    required this.roleAccess,
+    required this.isActive,
+  });
 
   @override
   _RoleEditScreenState createState() => _RoleEditScreenState();
@@ -13,13 +22,23 @@ class RoleEditScreen extends StatefulWidget {
 class _RoleEditScreenState extends State<RoleEditScreen> {
   late TextEditingController _roleController;
   late Map<String, bool> _roleAccess;
-  bool _isActive = true;
+  late bool _isActive;
+
+  final Map<String, String> labelToBackend = {
+    'POS (Create Order)': 'create_order',
+    'Ordering System (Order List)': 'orders_list',
+    'Inventory Management System': 'inventory',
+    'Financial Management System': 'financial',
+    'Booking Management System': 'booking',
+    'Employee Management System': 'employee',
+  };
 
   @override
   void initState() {
     super.initState();
     _roleController = TextEditingController(text: widget.roleName);
     _roleAccess = Map.from(widget.roleAccess);
+    _isActive = widget.isActive; // ✅ Use the value from the view screen
   }
 
   @override
@@ -30,15 +49,11 @@ class _RoleEditScreenState extends State<RoleEditScreen> {
         title: Text('Edit Role', style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              _saveRole();
-            },
+            onPressed: _saveRole,
             child: Text('Save', style: TextStyle(color: Colors.white)),
           ),
         ],
@@ -56,9 +71,7 @@ class _RoleEditScreenState extends State<RoleEditScreen> {
                   value: true,
                   groupValue: _isActive,
                   onChanged: (bool? value) {
-                    setState(() {
-                      _isActive = value!;
-                    });
+                    setState(() => _isActive = value!);
                   },
                 ),
                 Text('Active'),
@@ -67,9 +80,7 @@ class _RoleEditScreenState extends State<RoleEditScreen> {
                   value: false,
                   groupValue: _isActive,
                   onChanged: (bool? value) {
-                    setState(() {
-                      _isActive = value!;
-                    });
+                    setState(() => _isActive = value!);
                   },
                 ),
                 Text('Inactive'),
@@ -79,9 +90,7 @@ class _RoleEditScreenState extends State<RoleEditScreen> {
             Text('Name of Role', style: TextStyle(fontSize: 16)),
             TextField(
               controller: _roleController,
-              decoration: InputDecoration(
-                border: UnderlineInputBorder(),
-              ),
+              decoration: InputDecoration(border: UnderlineInputBorder()),
             ),
             SizedBox(height: 20),
             Column(
@@ -104,15 +113,43 @@ class _RoleEditScreenState extends State<RoleEditScreen> {
     );
   }
 
-  void _saveRole() {
-    String roleName = _roleController.text;
-    if (roleName.isNotEmpty) {
-      print('Updated Role Name: $roleName');
-      print('Updated Access Permissions: $_roleAccess');
-      Navigator.pop(context);
-    } else {
+  Future<void> _saveRole() async {
+    String roleName = _roleController.text.trim();
+    if (roleName.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please enter a role name.')),
+      );
+      return;
+    }
+
+    final selectedPermissions = _roleAccess.entries
+        .where((e) => e.value)
+        .map((e) => labelToBackend[e.key])
+        .where((e) => e != null)
+        .toList();
+
+    final url =
+        Uri.parse('http://10.0.2.2:8000/api/roles/edit/${widget.roleId}/');
+
+    final response = await http.put(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'role_name': roleName,
+        'status': _isActive ? 'active' : 'inactive',
+        'access_rights': selectedPermissions,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Role updated successfully.')),
+      );
+    } else {
+      print(response.body);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update role.')),
       );
     }
   }

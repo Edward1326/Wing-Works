@@ -1,70 +1,148 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class EditBookingScreen extends StatefulWidget {
   final String bookingId;
-  final String customerName;
-  final String eventName;
-  final String bookingDate;
-  final String customerEmail;
-  final String contactNumber;
-  final int numberOfAttendees;
-  final String location;
-  final String paymentStatus;
-  final String bookingStatus;
 
-  EditBookingScreen({
-    required this.bookingId,
-    required this.customerName,
-    required this.eventName,
-    required this.bookingDate,
-    required this.customerEmail,
-    required this.contactNumber,
-    required this.numberOfAttendees,
-    required this.location,
-    required this.paymentStatus,
-    required this.bookingStatus,
-  });
+  EditBookingScreen({required this.bookingId});
 
   @override
   _EditBookingScreenState createState() => _EditBookingScreenState();
 }
 
 class _EditBookingScreenState extends State<EditBookingScreen> {
-  late TextEditingController nameController;
-  late TextEditingController eventController;
-  late TextEditingController dateController;
-  late TextEditingController emailController;
-  late TextEditingController contactController;
-  late TextEditingController attendeesController;
-  late TextEditingController locationController;
+  final _formKey = GlobalKey<FormState>();
+
+  TextEditingController customerNameController = TextEditingController();
+  TextEditingController eventNameController = TextEditingController();
+  TextEditingController bookingDateController = TextEditingController();
+  TextEditingController customerEmailController = TextEditingController();
+  TextEditingController contactNumberController = TextEditingController();
+  TextEditingController numberOfAttendeesController = TextEditingController();
+  TextEditingController locationController = TextEditingController();
+
   String selectedPaymentStatus = "Pending";
   String selectedBookingStatus = "Pending";
+  bool isLoading = true;
+  bool isUpdating = false;
+
+  static const Map<String, String> paymentStatusMap = {
+    "P": "Pending",
+    "F": "Fully Paid",
+    "A": "Partially Paid",
+    "R": "Refunded",
+  };
+
+  static const Map<String, String> bookingStatusMap = {
+    "S": "Success",
+    "C": "Cancelled",
+    "P": "Pending",
+  };
 
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController(text: widget.customerName);
-    eventController = TextEditingController(text: widget.eventName);
-    dateController = TextEditingController(text: widget.bookingDate);
-    emailController = TextEditingController(text: widget.customerEmail);
-    contactController = TextEditingController(text: widget.contactNumber);
-    attendeesController =
-        TextEditingController(text: widget.numberOfAttendees.toString());
-    locationController = TextEditingController(text: widget.location);
-    selectedPaymentStatus = widget.paymentStatus;
-    selectedBookingStatus = widget.bookingStatus;
+    fetchBookingDetails();
   }
 
-  @override
-  void dispose() {
-    nameController.dispose();
-    eventController.dispose();
-    dateController.dispose();
-    emailController.dispose();
-    contactController.dispose();
-    attendeesController.dispose();
-    locationController.dispose();
-    super.dispose();
+  Future<void> fetchBookingDetails() async {
+    String apiUrl = "http://10.0.2.2:8000/api/bookings/${widget.bookingId}/";
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        setState(() {
+          customerNameController.text = data['customer_name'] ?? "";
+          eventNameController.text = data['event_name'] ?? "";
+          bookingDateController.text = data['booking_date'] ?? "";
+          customerEmailController.text = data['customer_email'] ?? "";
+          contactNumberController.text = data['customer_contact'] ?? "";
+          numberOfAttendeesController.text =
+              data['head_count']?.toString() ?? "";
+          locationController.text = data['location'] ?? "";
+          selectedPaymentStatus = getFullPaymentStatus(data['payment_status']);
+          print("DEBUG: Mapped Payment Status → $selectedPaymentStatus");
+          print(
+              "DEBUG: Available keys in map → ${paymentStatusMap.keys.toList()}");
+          selectedBookingStatus = getFullBookingStatus(data['booking_status']);
+          isLoading = false;
+        });
+      } else {
+        print("Error: ${response.statusCode} - ${response.body}");
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (error) {
+      print("Error fetching booking: $error");
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  String getFullPaymentStatus(String status) {
+    return paymentStatusMap[status.toUpperCase()] ?? "Pending";
+  }
+
+  String getFullBookingStatus(String status) {
+    return bookingStatusMap[status.toUpperCase()] ?? "Pending";
+  }
+
+  Future<void> updateBooking() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    setState(() {
+      isUpdating = true;
+    });
+
+    String apiUrl =
+        "http://10.0.2.2:8000/api/bookings/update/${widget.bookingId}/";
+
+    final Map<String, dynamic> requestData = {
+      "customer_name": customerNameController.text.trim(),
+      "event_name": eventNameController.text.trim(),
+      "booking_date": bookingDateController.text.trim(),
+      "customer_email": customerEmailController.text.trim(),
+      "customer_contact": contactNumberController.text.trim(),
+      "head_count": int.tryParse(numberOfAttendeesController.text.trim()) ?? 0,
+      "location": locationController.text.trim(),
+      "payment_status": paymentStatusMap.entries
+          .firstWhere((entry) => entry.value == selectedPaymentStatus,
+              orElse: () => MapEntry("P", "Pending")) // Default to "P"
+          .key,
+      "booking_status": bookingStatusMap.entries
+          .firstWhere((entry) => entry.value == selectedBookingStatus,
+              orElse: () => MapEntry("P", "Pending")) // Default to "P"
+          .key,
+    };
+
+    try {
+      final response = await http.put(
+        Uri.parse(apiUrl),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(requestData),
+      );
+
+      if (response.statusCode == 200) {
+        Navigator.pop(context, requestData);
+      } else {
+        print(
+            "Error updating booking: ${response.statusCode} - ${response.body}");
+      }
+    } catch (error) {
+      print("Error updating booking: $error");
+    }
+
+    setState(() {
+      isUpdating = false;
+    });
   }
 
   @override
@@ -76,137 +154,105 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
         title: Text('Edit Booking', style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              print("Updated Booking:");
-              print("Name: ${nameController.text}");
-              print("Event: ${eventController.text}");
-              print("Date: ${dateController.text}");
-              print("Email: ${emailController.text}");
-              print("Contact: ${contactController.text}");
-              print("Attendees: ${attendeesController.text}");
-              print("Location: ${locationController.text}");
-              print("Payment Status: $selectedPaymentStatus");
-              print("Booking Status: $selectedBookingStatus");
-              Navigator.pop(context);
-            },
-            child: Text('Save',
-                style: TextStyle(color: Colors.white, fontSize: 20)),
+            onPressed: isUpdating ? null : updateBooking,
+            child: Text(
+              "Save",
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
           ),
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Card(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          elevation: 3,
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: ListView(
-              shrinkWrap: true,
-              physics: BouncingScrollPhysics(),
-              children: [
-                _buildReadOnlyField('Booking ID', widget.bookingId),
-                _buildEditableField('Name', nameController),
-                _buildEditableField('Event Name', eventController),
-                _buildEditableField('Booking Date', dateController),
-                _buildEditableField('Customer Email', emailController),
-                _buildEditableField('Contact Number', contactController),
-                _buildEditableField('Number of Attendees', attendeesController),
-                _buildEditableField('Location', locationController),
-                _buildDropdownField(
-                    'Payment Status',
-                    ['Fully Paid', 'Partially Paid', 'Refunded', 'Pending'],
-                    selectedPaymentStatus, (value) {
-                  setState(() {
-                    selectedPaymentStatus = value!;
-                  });
-                }),
-                _buildDropdownField(
-                    'Booking Status',
-                    ['Success', 'Cancelled', 'Pending'],
-                    selectedBookingStatus, (value) {
-                  setState(() {
-                    selectedBookingStatus = value!;
-                  });
-                }),
-              ],
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: EdgeInsets.all(16),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 3,
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Form(
+                    key: _formKey,
+                    child: ListView(
+                      shrinkWrap: true,
+                      physics: BouncingScrollPhysics(),
+                      children: [
+                        _buildTextField(
+                            "Customer Name", customerNameController),
+                        _buildTextField("Event Name", eventNameController),
+                        _buildTextField(
+                            "Booking Date (YYYY-MM-DD)", bookingDateController),
+                        _buildTextField(
+                            "Customer Email", customerEmailController),
+                        _buildTextField(
+                            "Contact Number", contactNumberController),
+                        _buildTextField(
+                            "Number of Attendees", numberOfAttendeesController,
+                            isNumber: true),
+                        _buildTextField("Location", locationController),
+                        SizedBox(height: 16),
+                        Text("Payment Status:",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)),
+                        _buildDropdown(paymentStatusMap.values.toList(),
+                            selectedPaymentStatus, (value) {
+                          setState(() {
+                            selectedPaymentStatus = value!;
+                          });
+                        }),
+                        SizedBox(height: 16),
+                        Text("Booking Status:",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)),
+                        _buildDropdown(bookingStatusMap.values.toList(),
+                            selectedBookingStatus, (value) {
+                          setState(() {
+                            selectedBookingStatus = value!;
+                          });
+                        }),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
+    );
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller,
+      {bool isNumber = false}) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+        validator: (value) =>
+            value!.isEmpty ? "This field cannot be empty" : null,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(),
         ),
       ),
     );
   }
 
-  Widget _buildReadOnlyField(String label, String value) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 6),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: Colors.grey[700])),
-            SizedBox(height: 4),
-            Text(value,
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black87)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEditableField(String label, TextEditingController controller) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 6),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        child: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            labelText: label,
-            border: InputBorder.none,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDropdownField(String label, List<String> options,
-      String selectedValue, ValueChanged<String?> onChanged) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 6),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        child: DropdownButtonFormField<String>(
-          decoration: InputDecoration(
-            labelText: label,
-            border: InputBorder.none,
-          ),
-          value: selectedValue,
-          items: options.map((String option) {
-            return DropdownMenuItem<String>(
-              value: option,
-              child: Text(option),
-            );
-          }).toList(),
-          onChanged: onChanged,
-        ),
-      ),
+  Widget _buildDropdown(
+      List<String> items, String value, Function(String?) onChanged) {
+    return DropdownButtonFormField<String>(
+      value: value,
+      items: items
+          .map((item) => DropdownMenuItem(value: item, child: Text(item)))
+          .toList(),
+      onChanged: onChanged,
+      decoration: InputDecoration(border: OutlineInputBorder()),
     );
   }
 }

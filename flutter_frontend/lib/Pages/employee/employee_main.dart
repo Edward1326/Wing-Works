@@ -1,20 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_frontend/pages/create_order/create_order.dart';
 import 'package:flutter_frontend/pages/employee/employee_list/employee_list.dart';
 import 'package:flutter_frontend/pages/employee/employee_role/role_list.dart';
-
-void main() {
-  runApp(EmployeeApp());
-}
-
-class EmployeeApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: EmployeeScreen(),
-    );
-  }
-}
 
 class EmployeeScreen extends StatelessWidget {
   @override
@@ -25,46 +12,7 @@ class EmployeeScreen extends StatelessWidget {
         title: Text('Employee', style: TextStyle(color: Colors.white)),
         iconTheme: IconThemeData(color: Colors.white),
       ),
-      drawer: Drawer(
-        child: Container(
-          color: Color(0xFFB51616),
-          child: ListView(
-            children: [
-              ListTile(
-                leading: Icon(Icons.list, color: Colors.white),
-                title:
-                    Text('Create Order', style: TextStyle(color: Colors.white)),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: Icon(Icons.assignment_ind, color: Colors.white),
-                title: Text('Orders', style: TextStyle(color: Colors.white)),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: Icon(Icons.list, color: Colors.white),
-                title: Text('Inventory', style: TextStyle(color: Colors.white)),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: Icon(Icons.list, color: Colors.white),
-                title: Text('Financial', style: TextStyle(color: Colors.white)),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: Icon(Icons.list, color: Colors.white),
-                title: Text('Booking', style: TextStyle(color: Colors.white)),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: Icon(Icons.list, color: Colors.white),
-                title: Text('Employee', style: TextStyle(color: Colors.white)),
-                onTap: () {},
-              ),
-            ],
-          ),
-        ),
-      ),
+      drawer: buildDrawer(context),
       body: Container(
         color: Color(0xFFFFE4E1),
         padding: EdgeInsets.all(16),

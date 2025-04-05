@@ -1,21 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_frontend/pages/employee/employee_main.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_frontend/pages/employee/employee_role/role_create.dart';
 import 'package:flutter_frontend/pages/employee/employee_role/role_view.dart';
-
-void main() {
-  runApp(RoleApp());
-}
-
-class RoleApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: EmployeeScreen(),
-    );
-  }
-}
 
 class RoleListScreen extends StatefulWidget {
   @override
@@ -23,73 +10,117 @@ class RoleListScreen extends StatefulWidget {
 }
 
 class _RoleListScreenState extends State<RoleListScreen> {
-  final Map<String, int> roles = {
-    'Manager': 1,
-    'Cashier': 1,
-    'Cook': 2,
-  };
+  List<Map<String, dynamic>> roles = []; // role_name, employee_count, status
+  bool isLoading = true;
+  String filterStatus = 'active'; // default to 'active'
+
+  @override
+  void initState() {
+    super.initState();
+    fetchRoles();
+  }
+
+  Future<void> fetchRoles() async {
+    final url = Uri.parse('http://10.0.2.2:8000/api/roles/list/');
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
+
+        setState(() {
+          roles = data
+              .map<Map<String, dynamic>>((role) => {
+                    'id': role['id'],
+                    'role_name': role['role_name'],
+                    'employee_count': role['employee_count'] ?? 0,
+                    'status': role['status'] ?? 'active',
+                  })
+              .toList();
+          isLoading = false;
+        });
+      } else {
+        print("Failed to fetch roles: ${response.statusCode}");
+        setState(() => isLoading = false);
+      }
+    } catch (e) {
+      print("Error fetching roles: $e");
+      setState(() => isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final filteredRoles =
+        roles.where((role) => role['status'] == filterStatus).toList();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFB51616),
         title: Text('Role List', style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          PopupMenuButton<String>(
+            icon: Icon(Icons.filter_list, color: Colors.white),
+            onSelected: (value) {
+              setState(() => filterStatus = value);
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(value: 'active', child: Text('Active Roles')),
+              PopupMenuItem(value: 'inactive', child: Text('Inactive Roles')),
+            ],
+          ),
+        ],
       ),
       body: Container(
         color: Color(0xFFFFE4E1),
         padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Table(
-              border: TableBorder.all(color: Colors.black),
-              columnWidths: {
-                0: FlexColumnWidth(3),
-                1: FlexColumnWidth(2),
-              },
-              children: [
-                TableRow(
-                  decoration: BoxDecoration(color: Colors.white),
-                  children: [
-                    tableCell('Role', isHeader: true),
-                    tableCell('Employees', isHeader: true),
-                  ],
-                ),
-                ...roles.entries.map((entry) {
-                  return TableRow(
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Table(
+                    border: TableBorder.all(color: Colors.black),
+                    columnWidths: {
+                      0: FlexColumnWidth(3),
+                      1: FlexColumnWidth(2),
+                    },
                     children: [
-                      tableCell(entry.key, onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ViewRoleScreen(
-                              roleName: entry.key,
-                              roleAccess: {
-                                'Ordering System and POS': false,
-                                'Inventory Management System': false,
-                                'Financial Management System': false,
-                                'Booking Management System': false,
-                                'Employee Management System': false,
-                              },
-                            ),
-                          ),
+                      TableRow(
+                        decoration: BoxDecoration(color: Colors.white),
+                        children: [
+                          tableCell('Role', isHeader: true),
+                          tableCell('Employees', isHeader: true),
+                        ],
+                      ),
+                      ...filteredRoles.map((role) {
+                        final roleName = role['role_name'];
+                        final employeeCount = role['employee_count'];
+                        final roleId = role['id'];
+
+                        return TableRow(
+                          children: [
+                            tableCell(roleName, onTap: () async {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ViewRoleScreen(roleId: roleId),
+                                ),
+                              );
+                            }),
+                            tableCell(employeeCount.toString()),
+                          ],
                         );
-                      }),
-                      tableCell(entry.value.toString()),
+                      }).toList(),
                     ],
-                  );
-                }).toList(),
-              ],
-            ),
-          ],
-        ),
+                  ),
+                ],
+              ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

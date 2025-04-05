@@ -16,8 +16,33 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.authtoken.views import obtain_auth_token
+from django.http import JsonResponse
+
+# Create a simple homepage response
+def homepage(request):
+    return JsonResponse({
+        "message": "Welcome to Wing Works API!",
+        "endpoints": {
+            "Admin Panel": "/admin/",
+            "API Root": "/api/",
+            "Auth Token": "/api/auth/",
+            "Bookings": {
+                "Create Booking": "/api/bookings/create/",
+                "List Bookings": "/api/bookings/list/"
+            },
+            "Products": "/api/products/",
+            "Ingredients": "/api/ingredients/",
+            "Categories": "/api/categories/",
+            "Users": "/api/users/"
+        }
+    })
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('api.urls')),
+    path('api/', include('api.urls')),  # Include API endpoints
+    path('api/auth/', obtain_auth_token),  # Authentication API (Login)
+    path('', homepage),  # Default API homepage
 ]
+
+

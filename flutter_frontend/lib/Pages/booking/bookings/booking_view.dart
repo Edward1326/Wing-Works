@@ -51,8 +51,58 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
     contactNumber = widget.contactNumber;
     numberOfAttendees = widget.numberOfAttendees;
     location = widget.location;
-    paymentStatus = widget.paymentStatus;
-    bookingStatus = widget.bookingStatus;
+    paymentStatus = getFullPaymentStatus(widget.paymentStatus);
+    bookingStatus = getFullBookingStatus(widget.bookingStatus);
+  }
+
+  // Maps short statuses to full names
+  static const Map<String, String> paymentStatusMap = {
+    "P": "Pending",
+    "F": "Fully Paid",
+    "A": "Partially Paid",
+    "R": "Refunded",
+  };
+
+  static const Map<String, String> bookingStatusMap = {
+    "S": "Success",
+    "C": "Cancelled",
+    "P": "Pending",
+  };
+
+  // Convert abbreviated statuses to full names
+  String getFullPaymentStatus(String status) {
+    return paymentStatusMap[status.toUpperCase()] ?? status;
+  }
+
+  String getFullBookingStatus(String status) {
+    return bookingStatusMap[status.toUpperCase()] ?? status;
+  }
+
+  Future<void> navigateToEditPage() async {
+    final updatedData = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditBookingScreen(
+          bookingId: widget.bookingId,
+        ),
+      ),
+    );
+
+    if (updatedData != null) {
+      setState(() {
+        customerName = updatedData['customer_name'];
+        eventName = updatedData['event_name'];
+        bookingDate = updatedData['booking_date'];
+        customerEmail = updatedData['customer_email'];
+        contactNumber = updatedData['customer_contact'];
+        numberOfAttendees = updatedData['head_count'];
+        location = updatedData['location'];
+        paymentStatus = getFullPaymentStatus(updatedData['payment_status']);
+        bookingStatus = getFullBookingStatus(updatedData['booking_status']);
+      });
+
+      Navigator.pop(context, updatedData); // ✅ Send updated data back
+    }
   }
 
   @override
@@ -68,6 +118,15 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
             Navigator.pop(context);
           },
         ),
+        actions: [
+          TextButton(
+            onPressed: navigateToEditPage,
+            child: Text(
+              "Edit",
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.all(16),
@@ -92,46 +151,6 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
                 _buildInfoCard('Location', location),
                 _buildStatusCard('Payment Status', paymentStatus),
                 _buildStatusCard('Booking Status', bookingStatus),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildActionButton('Edit', Colors.blue, Icons.edit,
-                        () async {
-                      final updatedData = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditBookingScreen(
-                            bookingId: widget.bookingId,
-                            customerName: customerName,
-                            eventName: eventName,
-                            bookingDate: bookingDate,
-                            customerEmail: customerEmail,
-                            contactNumber: contactNumber,
-                            numberOfAttendees: numberOfAttendees,
-                            location: location,
-                            paymentStatus: paymentStatus,
-                            bookingStatus: bookingStatus,
-                          ),
-                        ),
-                      );
-
-                      if (updatedData != null) {
-                        setState(() {
-                          customerName = updatedData['customerName'];
-                          eventName = updatedData['eventName'];
-                          bookingDate = updatedData['bookingDate'];
-                          customerEmail = updatedData['customerEmail'];
-                          contactNumber = updatedData['contactNumber'];
-                          numberOfAttendees = updatedData['numberOfAttendees'];
-                          location = updatedData['location'];
-                          paymentStatus = updatedData['paymentStatus'];
-                          bookingStatus = updatedData['bookingStatus'];
-                        });
-                      }
-                    }),
-                  ],
-                ),
               ],
             ),
           ),
@@ -229,20 +248,6 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildActionButton(
-      String text, Color color, IconData icon, VoidCallback onPressed) {
-    return ElevatedButton.icon(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-      onPressed: onPressed,
-      icon: Icon(icon, color: Colors.white),
-      label: Text(text, style: TextStyle(color: Colors.white, fontSize: 16)),
     );
   }
 }
